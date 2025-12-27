@@ -1,3 +1,5 @@
+// DV-7: Evitar selección misma moneda en los dos campos.
+
 // DV-8 Refactor: estado central y funciones públicas
 
 const CURRENCIES = Object.freeze([
@@ -36,7 +38,9 @@ function pickDifferentCurrency(excludeCode) {
 
 // DV-7: garantiza que from !== to ajustando el selector contrario al que cambió
 function ensureDifferentCurrencies(changed) {
-  if (state.from !== state.to) return;
+  if (state.from !== state.to) {
+    return;
+  }
 
   if (changed === "from") {
     // Si el usuario cambió "from" y coincide con "to", ajustamos "to"
