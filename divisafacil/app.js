@@ -1,3 +1,5 @@
+
+// DV-6: Lista única de monedas permitidas (MVP)
 // DV-7: Evitar selección misma moneda en los dos campos.
 
 // DV-8 Refactor: estado central y funciones públicas
