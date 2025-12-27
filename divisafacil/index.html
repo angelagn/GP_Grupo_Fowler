@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DivisaFácil</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">DF</div>
+      <div class="brand-text">
+        <h1>DivisaFácil</h1>
+        <p>Conversión rápida con histórico</p>
+      </div>
+    </div>
+
+    <div class="status" id="status">
+      <span class="dot"></span>
+      <span class="status-text">Listo</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <div class="card-header">
+        <h2>Conversor</h2>
+        <p class="muted">Selecciona divisas e introduce un importe.</p>
+      </div>
+
+      <div class="grid">
+        <div class="field">
+          <label for="amount">Importe</label>
+          <input id="amount" type="number" inputmode="decimal" step="0.01" min="0" placeholder="Ej. 100" />
+          <small class="hint">Se recalcula automáticamente.</small>
+        </div>
+
+        <div class="field">
+          <label for="from">De</label>
+          <select id="from"></select>
+        </div>
+
+        <div class="swap-wrap">
+          <button id="swap" class="btn-secondary" type="button" title="Intercambiar divisas">
+            ⇄
+          </button>
+        </div>
+
+        <div class="field">
+          <label for="to">A</label>
+          <select id="to"></select>
+        </div>
+      </div>
+
+      <div class="result">
+        <div class="result-main">
+          <div class="result-label">Resultado</div>
+          <div class="result-value" id="result">—</div>
+        </div>
+        <div class="result-meta" id="meta">Selecciona divisas para ver la conversión.</div>
+      </div>
+
+      <div class="actions">
+        <button id="refresh" class="btn-primary" type="button">Actualizar</button>
+        <button id="reset" class="btn-ghost" type="button">Reiniciar</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <h2>Histórico del tipo de cambio</h2>
+        <p class="muted">Evolución del tipo de cambio (últimos 30 días).</p>
+      </div>
+
+      <div class="chart-wrap">
+        <canvas id="chart" aria-label="Gráfico histórico del tipo de cambio" role="img"></canvas>
+      </div>
+
+      <div class="footnote muted">
+        (El gráfico se conectará en una subtarea posterior)
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>Equipo Fowler · Gestión de Proyectos</span>
+    <span class="muted">MVP · Sprint 1</span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
