@@ -145,6 +145,50 @@ function setTo(code) {
   syncUIFromState();
 }
 
+// ===== DV-10 + DV-11: restricciones de importe + coma decimal =====
+
+function normalizeAmountInput(raw) {
+  // DV-11: aceptar coma, normalizar a punto internamente
+  let s = String(raw || "").replace(/,/g, ".");
+
+  // DV-10: eliminar cualquier cosa que no sea dígito o punto (no permite '-' => no negativos)
+  s = s.replace(/[^\d.]/g, "");
+
+  // permitir solo un punto
+  const firstDot = s.indexOf(".");
+  if (firstDot !== -1) {
+    const before = s.slice(0, firstDot + 1);
+    const after = s.slice(firstDot + 1).replace(/\./g, "");
+    s = before + after;
+  }
+
+  // limitar a 2 decimales
+  const dotPos = s.indexOf(".");
+  if (dotPos !== -1) {
+    const intPart = s.slice(0, dotPos);
+    const decPart = s.slice(dotPos + 1).slice(0, 2);
+    s = intPart + "." + decPart;
+  }
+
+  // casos como "." -> "0."
+  if (s === ".") s = "0.";
+
+  return s;
+}
+
+function formatAmountOnBlur(value) {
+  if (value === "" || value === "0." || value === ".") return "";
+  const n = Number(value);
+  if (!Number.isFinite(n) || n < 0) return "";
+  return n.toFixed(2);
+}
+
+function setAmount(rawValue, { formatOnBlur = false } = {}) {
+  const normalized = normalizeAmountInput(rawValue);
+  state.amount = formatOnBlur ? formatAmountOnBlur(normalized) : normalized;
+  amountEl.value = state.amount;
+}
+
 /* =========================
    DV-16: Formato (2 decimales)
    ========================= */
