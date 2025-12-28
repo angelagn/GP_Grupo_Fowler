@@ -19,7 +19,25 @@
       <label for="from">De</label>
       <select id="from"></select>
 
-      <!-- Futuro: aquí irá el selector "A", el input y el resultado -->
+      <label for="to">A</label>
+<select id="to"></select>
+
+<label for="amount">Importe</label>
+<input
+  id="amount"
+  type="text"
+  inputmode="decimal"
+  placeholder="Ej. 100,50"
+  aria-describedby="amount-hint"
+/>
+<small id="amount-hint" class="hint">
+  Introduce el importe a convertir
+</small>
+
+<div class="actions">
+  <button id="swap" class="btn-secondary" type="button" title="Intercambiar divisas">↔</button>
+</div>
+
     </section>
   </main>
 

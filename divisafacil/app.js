@@ -16,11 +16,26 @@ const CURRENCIES = Object.freeze([
 const state = {
   from: "EUR",
   to: "USD",
+  amount: "", //DV-9: guardar todo lo que escribe el usuario
 };
 
 // DOM
 const fromEl = document.getElementById("from");
 const toEl = document.getElementById("to");
+const amountEl = document.getElementById("amount");
+const swapBtn = document.getElementById("swap");
+
+// DV-9: setter simple (sin validar todavía)
+function setAmount(rawValue) {
+  state.amount = String(rawValue ?? "");
+  amountEl.value = state.amount;
+}
+
+// DV-9: capturar lo que el usuario escribe
+  amountEl.addEventListener("input", () => {
+    setAmount(amountEl.value);
+    console.log("Selección:", getSelection());
+  });
 
 // Rellena un <select> con las monedas disponibles
 function populateSelect(selectEl, defaultCode) {
