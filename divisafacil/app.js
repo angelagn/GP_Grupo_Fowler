@@ -31,9 +31,14 @@ function setAmount(rawValue) {
   amountEl.value = state.amount;
 }
 
-// DV-9: capturar lo que el usuario escribe
+// DV-10: normalización en tiempo real + formateo al salir del campo
   amountEl.addEventListener("input", () => {
-    setAmount(amountEl.value);
+    setAmount(amountEl.value, { formatOnBlur: false });
+    console.log("Selección:", getSelection());
+  });
+
+  amountEl.addEventListener("blur", () => {
+    setAmount(amountEl.value, { formatOnBlur: true });
     console.log("Selección:", getSelection());
   });
 
@@ -47,6 +52,47 @@ function populateSelect(selectEl, defaultCode) {
     selectEl.appendChild(opt);
   }
   selectEl.value = defaultCode;
+}
+
+// ===== DV-10: restricciones de importe =====
+
+function normalizeAmountInput(raw) {
+  // 1) eliminar cualquier cosa que no sea dígito o punto (no permite '-' => no negativos)
+  let s = String(raw || "").replace(/[^\d.]/g, "");
+
+  // 2) permitir solo un punto
+  const firstDot = s.indexOf(".");
+  if (firstDot !== -1) {
+    const before = s.slice(0, firstDot + 1);
+    const after = s.slice(firstDot + 1).replace(/\./g, "");
+    s = before + after;
+  }
+
+  // 3) limitar a 2 decimales
+  const dotPos = s.indexOf(".");
+  if (dotPos !== -1) {
+    const intPart = s.slice(0, dotPos);
+    const decPart = s.slice(dotPos + 1).slice(0, 2);
+    s = intPart + "." + decPart;
+  }
+
+  // 4) casos como "." -> "0."
+  if (s === ".") s = "0.";
+
+  return s;
+}
+
+function formatAmountOnBlur(value) {
+  if (value === "" || value === "0." || value === ".") return "";
+  const n = Number(value);
+  if (!Number.isFinite(n) || n < 0) return "";
+  return n.toFixed(2);
+}
+
+function setAmount(rawValue, { formatOnBlur = false } = {}) {
+  const normalized = normalizeAmountInput(rawValue);
+  state.amount = formatOnBlur ? formatAmountOnBlur(normalized) : normalized;
+  amountEl.value = state.amount;
 }
 
 // DV-7: devuelve una moneda diferente a excludeCode (la primera disponible)
