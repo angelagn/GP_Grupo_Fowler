@@ -4,6 +4,8 @@
 
 // DV-8 Refactor: estado central y funciones públicas
 
+const API_BASE = "https://api.frankfurter.app";
+
 const CURRENCIES = Object.freeze([
   { code: "EUR", name: "Euro (EUR)" },
   { code: "USD", name: "Dólar USA (USD)" },
