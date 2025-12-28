@@ -24,6 +24,8 @@ const fromEl = document.getElementById("from");
 const toEl = document.getElementById("to");
 const amountEl = document.getElementById("amount");
 const swapBtn = document.getElementById("swap");
+const resetBtn = document.getElementById("reset"); // DV-12
+
 
 // DV-9: setter simple (sin validar todavía)
 function setAmount(rawValue) {
@@ -41,6 +43,13 @@ function setAmount(rawValue) {
     setAmount(amountEl.value, { formatOnBlur: true });
     console.log("Selección:", getSelection());
   });
+
+// ===== DV-12: reset del importe =====
+function resetAmountOnly() {
+  state.amount = "";
+  amountEl.value = state.amount;
+}
+
 
 // Rellena un <select> con las monedas disponibles
 function populateSelect(selectEl, defaultCode) {
@@ -267,6 +276,11 @@ function init() {
     const sel = getSelection();
     console.log("Selección:", sel);
   });
+
+  resetBtn.addEventListener("click", () => {
+  resetAmountOnly();
+});
+
 }
 
 init();
