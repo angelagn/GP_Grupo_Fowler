@@ -136,7 +136,27 @@ async function refreshComputeOnly() {
     if (metaEl) metaEl.textContent = "No se pudo obtener la cotización.";
   }
 }
+/* =========================
+   DV-15: Auto-update / recalcula el resultado
+   ========================= */
 
+function debounce(fn, ms) {
+  let t;
+  return function (...args) {
+    clearTimeout(t);
+    t = setTimeout(() => fn.apply(this, args), ms);
+  };
+}
+
+const refreshComputeDebounced = debounce(() => {
+  refreshComputeOnly();
+}, 250);
+
+
+/* =========================
+   Init + eventos
+   ========================= */
+   
 function init() {
   // Rellenar ambos selectores
   populateSelect(fromEl, state.from);
