@@ -137,7 +137,6 @@ async function refreshComputeOnly() {
   }
 }
 
-
 function init() {
   // Rellenar ambos selectores
   populateSelect(fromEl, state.from);
