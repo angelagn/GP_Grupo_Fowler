@@ -82,6 +82,45 @@ function setTo(code) {
   syncUIFromState();
 }
 
+/* =========================
+   DV-16: Formato (2 decimales)
+   ========================= */
+
+function formatMoney(value, currency) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return "—";
+  return `${n.toFixed(2)} ${currency}`;
+}
+
+function formatRateLine(from, to, rate, date) {
+  if (!Number.isFinite(rate)) return "Introduce un importe válido.";
+  const dateTxt = date ? ` · Fecha: ${date}` : "";
+  return `Tipo: 1 ${from} = ${rate.toFixed(2)} ${to}${dateTxt}`;
+}
+
+function paintConversion({ converted, rate, date }) {
+  if (!Number.isFinite(converted) || !Number.isFinite(rate)) {
+    if (resultEl) resultEl.textContent = "—";
+    if (metaEl) metaEl.textContent = "Introduce un importe válido.";
+    return;
+  }
+
+  if (resultEl) resultEl.textContent = formatMoney(converted, state.to);
+  if (metaEl) metaEl.textContent = formatRateLine(state.from, state.to, rate, date);
+}
+
+async function refreshComputeOnly() {
+  try {
+    const data = await computeConversion();
+    paintConversion(data);
+  } catch (err) {
+    console.error("Error DV-14:", err);
+    if (resultEl) resultEl.textContent = "—";
+    if (metaEl) metaEl.textContent = "No se pudo obtener la cotización.";
+  }
+}
+
+
 function init() {
   // Rellenar ambos selectores
   populateSelect(fromEl, state.from);
