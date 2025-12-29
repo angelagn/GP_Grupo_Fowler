@@ -1,3 +1,4 @@
+<!-- index.html (DV-17) -->
 <!doctype html>
 <html lang="es">
 <head>
@@ -6,42 +7,98 @@
   <title>DivisaFácil</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
   <header class="topbar">
-    <h1>DivisaFácil</h1>
-    <p>Conversor de monedas (MVP)</p>
+    <div class="brand">
+      <div class="logo">DF</div>
+      <div class="brand-text">
+        <h1>DivisaFácil</h1>
+        <p>Conversión rápida con histórico</p>
+      </div>
+    </div>
+
+    <div class="status" id="status">
+      <span class="dot"></span>
+      <span class="status-text">Listo</span>
+    </div>
   </header>
 
   <main class="container">
     <section class="card">
-      <h2>Selector de moneda</h2>
+      <div class="card-header">
+        <h2>Conversor</h2>
+        <p class="muted">Selecciona divisas e introduce un importe.</p>
+      </div>
 
-      <label for="from">De</label>
-      <select id="from"></select>
+      <div class="grid">
+        <div class="field">
+          <label for="amount">Importe</label>
+          <input
+            id="amount"
+            type="text"
+            inputmode="decimal"
+            autocomplete="off"
+            placeholder="Ej. 100,00"
+            aria-describedby="amountHint"
+          />
+          <small class="hint" id="amountHint">Máximo 2 decimales. Puedes usar coma o punto.</small>
+        </div>
 
-      <label for="to">A</label>
-<select id="to"></select>
+        <div class="field">
+          <label for="from">De</label>
+          <select id="from"></select>
+        </div>
 
-<label for="amount">Importe</label>
-<input
-  id="amount"
-  type="text"
-  inputmode="decimal"
-  placeholder="Ej. 100,50"
-  aria-describedby="amount-hint"
-/>
-<small id="amount-hint" class="hint">
-  Introduce el importe a convertir
-</small>
+        <div class="swap-wrap">
+          <button id="swap" class="btn-secondary" type="button" title="Intercambiar divisas">
+            ⇄
+          </button>
+        </div>
 
-<div class="actions">
-  <button id="swap" class="btn-secondary" type="button" title="Intercambiar divisas">↔</button>
-  <button id="reset" class="btn-secondary" type="button" title="Limpiar importe">Reset</button>
-</div>
+        <div class="field">
+          <label for="to">A</label>
+          <select id="to"></select>
+        </div>
+      </div>
 
+      <div class="result">
+        <div class="result-main">
+          <div class="result-label">Resultado</div>
+          <div class="result-value" id="result">—</div>
+        </div>
+        <div class="result-meta" id="meta">Introduce un importe válido.</div>
+      </div>
+
+      <div class="actions">
+        <button id="refresh" class="btn-primary" type="button">Actualizar</button>
+        <button id="reset" class="btn-ghost" type="button">Reiniciar</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <h2>Histórico del tipo de cambio</h2>
+        <p class="muted">Evolución del tipo de cambio (últimos 30 días).</p>
+      </div>
+
+      <div class="chart-wrap">
+        <canvas id="chart" aria-label="Gráfico histórico del tipo de cambio" role="img"></canvas>
+      </div>
+
+      <div class="footnote muted" id="chartNote">
+        —
+      </div>
     </section>
   </main>
 
+  <footer class="footer">
+    <span>Equipo Fowler · Gestión de Proyectos</span>
+    <span class="muted">MVP · Sprint 1</span>
+  </footer>
+
+  <!-- DV-17: Chart.js (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
