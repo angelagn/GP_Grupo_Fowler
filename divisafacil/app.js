@@ -15,6 +15,25 @@ const state = {
 
 const fromEl = document.getElementById("from");
 const toEl = document.getElementById("to");
+const resultEl = document.getElementById("result");
+const metaEl = document.getElementById("meta");
+const swapBtn = document.getElementById("swap");
+const refreshBtn = document.getElementById("refresh");
+const resetBtn = document.getElementById("reset");
+const statusEl = document.getElementById("status");
+const statusTextEl = statusEl.querySelector(".status-text");
+const statusDotEl = statusEl.querySelector(".dot");
+
+let chart; // Chart.js instance
+
+function setStatus(type, text) {
+  statusTextEl.textContent = text;
+
+  // Color del dot según estado
+  if (type === "ok") statusDotEl.style.background = "#22c55e";
+  if (type === "loading") statusDotEl.style.background = "#f59e0b";
+  if (type === "error") statusDotEl.style.background = "#ef4444";
+}
 
 function populateSelect(selectEl, defaultCode) {
   selectEl.innerHTML = "";
