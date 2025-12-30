@@ -5,31 +5,30 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>DivisaFácil</title>
+  <link rel="icon" type="image/png" href="favicon.png" />
   <link rel="stylesheet" href="style.css" />
 </head>
 
-<body>
-  <header class="topbar">
-    <div class="brand">
-      <div class="logo">DF</div>
-      <div class="brand-text">
-        <h1>DivisaFácil</h1>
-        <p>Conversión rápida con histórico</p>
-      </div>
-    </div>
+const API_BASE = "https://api.frankfurter.app";
 
-    <div class="status" id="status">
-      <span class="dot"></span>
-      <span class="status-text">Listo</span>
-    </div>
-  </header>
+const CURRENCIES = [
+  { code: "EUR", name: "Euro (EUR)" },
+  { code: "USD", name: "Dólar USA (USD)" },
+  { code: "GBP", name: "Libra esterlina (GBP)" },
+];
 
-  <main class="container">
-    <section class="card">
-      <div class="card-header">
-        <h2>Conversor</h2>
-        <p class="muted">Selecciona divisas e introduce un importe.</p>
-      </div>
+// DOM
+const amountEl = document.getElementById("amount");
+const fromEl = document.getElementById("from");
+const toEl = document.getElementById("to");
+const resultEl = document.getElementById("result");
+const metaEl = document.getElementById("meta");
+const swapBtn = document.getElementById("swap");
+const refreshBtn = document.getElementById("refresh");
+const resetBtn = document.getElementById("reset");
+const statusEl = document.getElementById("status");
+const statusTextEl = statusEl.querySelector(".status-text");
+const statusDotEl = statusEl.querySelector(".dot");
 
       <div class="grid">
         <div class="field">
@@ -45,22 +44,25 @@
           <small class="hint" id="amountHint">Máximo 2 decimales. Puedes usar coma o punto.</small>
         </div>
 
-        <div class="field">
-          <label for="from">De</label>
-          <select id="from"></select>
-        </div>
+function setStatus(type, text) {
+  statusTextEl.textContent = text;
 
-        <div class="swap-wrap">
-          <button id="swap" class="btn-secondary" type="button" title="Intercambiar divisas">
-            ⇄
-          </button>
-        </div>
+  // Color del dot según estado
+  if (type === "ok") statusDotEl.style.background = "#22c55e";
+  if (type === "loading") statusDotEl.style.background = "#f59e0b";
+  if (type === "error") statusDotEl.style.background = "#ef4444";
+}
 
-        <div class="field">
-          <label for="to">A</label>
-          <select id="to"></select>
-        </div>
-      </div>
+function populateSelect(selectEl, defaultCode) {
+  selectEl.innerHTML = "";
+  for (const c of CURRENCIES) {
+    const opt = document.createElement("option");
+    opt.value = c.code;
+    opt.textContent = c.name;
+    selectEl.appendChild(opt);
+  }
+  selectEl.value = defaultCode;
+}
 
       <div class="result">
         <div class="result-main">
@@ -70,21 +72,25 @@
         <div class="result-meta" id="meta">Introduce un importe válido.</div>
       </div>
 
-      <div class="actions">
-        <button id="refresh" class="btn-primary" type="button">Actualizar</button>
-        <button id="reset" class="btn-ghost" type="button">Reiniciar</button>
-      </div>
-    </section>
+function todayISO() {
+  return new Date().toISOString().slice(0, 10);
+}
 
-    <section class="card">
-      <div class="card-header">
-        <h2>Histórico del tipo de cambio</h2>
-        <p class="muted">Evolución del tipo de cambio (últimos 30 días).</p>
-      </div>
+function daysAgoISO(days) {
+  const d = new Date();
+  d.setDate(d.getDate() - days);
+  return d.toISOString().slice(0, 10);
+}
 
-      <div class="chart-wrap">
-        <canvas id="chart" aria-label="Gráfico histórico del tipo de cambio" role="img"></canvas>
-      </div>
+async function fetchLatestRate(from, to) {
+  const url = `${API_BASE}/latest?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Error API latest: ${res.status}`);
+  const data = await res.json();
+  const rate = data?.rates?.[to];
+  if (!rate) throw new Error("No se encontró la tasa en la respuesta.");
+  return { rate, date: data.date };
+}
 
       <div class="footnote muted" id="chartNote">
         —
@@ -92,10 +98,10 @@
     </section>
   </main>
 
-  <footer class="footer">
-    <span>Equipo Fowler · Gestión de Proyectos</span>
-    <span class="muted">MVP · Sprint 1</span>
-  </footer>
+  // data.rates: { "YYYY-MM-DD": { "USD": 1.09 } ... }
+  const ratesObj = data.rates || {};
+  const labels = Object.keys(ratesObj).sort();
+  const values = labels.map(d => ratesObj[d]?.[to]).filter(v => typeof v === "number");
 
   <!-- DV-17: Chart.js (CDN) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
